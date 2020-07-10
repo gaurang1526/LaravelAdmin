@@ -11,9 +11,10 @@
             <h1 class="m-0 text-dark">User Management</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
+           <!--  <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item active">User Management</li>
-            </ol>
+            </ol> -->
+            <a href="{{route('add-user')}}" class="btn btn-primary btn-sm float-sm-right">Add User</a>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -73,7 +74,7 @@
                               </i>
                               Edit
                           </a>
-                          <a class="btn btn-danger btn-sm" href="{{route('delete-user', ['id' => $user->id])}}">
+                          <a class="btn btn-danger btn-sm" id="delete_user" onclick="return confirm('Are you sure?')" href="{{route('delete-user', ['id' => $user->id])}}">
                               <i class="fas fa-trash">
                               </i>
                               Delete
@@ -95,4 +96,5 @@
   </div>
   <!-- /.content-wrapper -->
   </div>
+
 @endsection

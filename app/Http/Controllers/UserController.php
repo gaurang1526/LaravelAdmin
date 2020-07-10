@@ -14,6 +14,14 @@ class UserController extends Controller
     	return view('register');
     }
 
+    public function add_user(Request $req){
+        if($req->Session()->has('AdminStatus')){
+            $id = $req->Session()->get('id');
+            $data = User::find($id);
+        }
+        return view('add_user')->with('data',$data);
+    }
+
     public function register_db(Request $req){
 
     	$users = new User();
@@ -26,17 +34,28 @@ class UserController extends Controller
 
 	     if($validator->fails())
 	     {
-	     	
-	       return redirect('/register_user')->withErrors($validator)->withInput();
+	     	if($req->Session()->has('AdminStatus')){
+                return redirect('/add_user')->withErrors($validator)->withInput();
+            }
+             return redirect('/register_user')->withErrors($validator)->withInput();
 	     }
 	     $users->name = $req->name;
 	     $users->email = $req->email;
-	     $users->role = 0;
+	     if($req->Session()->has('AdminStatus')){
+            $users->role = $req->role;
+         }else{
+             $users->role = 0;
+         }
+
 	     $users->password = md5($req->Password);
 
 	     $users->save();
-
-	     return redirect('/user_login');
+         if($req->Session()->has('AdminStatus')){
+            return redirect('/user_list');
+         }else{
+             return redirect('/user_login');
+         }
+	     
 
 
     }
@@ -52,6 +71,14 @@ class UserController extends Controller
     }
 
     public function delete_user(Request $req){
+        if($req->Session()->has('AdminStatus')){
+            if($req->Session()->get('id') == $req->id){
+                $user = User::where('id',$req->id)->delete();
+                $req->Session()->forget('AdminStatus');
+                $req->Session()->forget('id');
+                return redirect("/user_login");
+            }
+        }
     	$user = User::where('id',$req->id)->delete();
     	return redirect('/user_list');
     }
