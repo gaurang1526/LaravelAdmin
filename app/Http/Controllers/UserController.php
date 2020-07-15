@@ -19,7 +19,8 @@ class UserController extends Controller
             $id = $req->Session()->get('id');
             $data = User::find($id);
         }
-        return view('add_user')->with('data',$data);
+        $site = Controller::logo();
+        return view('add_user',compact('site'))->with('data',$data);
     }
 
     public function register_db(Request $req){
@@ -66,8 +67,8 @@ class UserController extends Controller
     		$data = User::find($id);
     	}
     	$users = User::all();
-
-    	return view('user_list')->with('data',$data)->with('users',$users);
+        $site = Controller::logo();
+    	return view('user_list',compact('site'))->with('data',$data)->with('users',$users);
     }
 
     public function delete_user(Request $req){
@@ -89,8 +90,8 @@ class UserController extends Controller
     		$data = User::find($id);
     	}
     	$users = User::find($req->id);
-
-    	return view('user_edit_form')->with('data',$data)->with('users',$users);
+        $site = Controller::logo();
+    	return view('user_edit_form',compact('site'))->with('data',$data)->with('users',$users);
     }
 
     public function user_update(Request $req){

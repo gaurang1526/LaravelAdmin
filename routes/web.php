@@ -26,6 +26,10 @@ Route::group(['middleware' => 'AdminLogin'],function(){
 
 	Route::get('/add_user','UserController@add_user')->name('add-user');
 
+	Route::get('/setting','SettingController@setting')->name('setting');
+	Route::post('/setting_change','SettingController@setting_change')->name('setting-change');
+
+
 	Route::get('/user_list', 'UserController@user_list')->name('user-list');
 	Route::get('/delete_user/{id}','UserController@delete_user')->name("delete-user");
 	Route::get('/edit_user_form/{id}','UserController@edit_user_form')->name("edit-user-form");

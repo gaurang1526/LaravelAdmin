@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\User;
+use App\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Validator;
@@ -19,6 +20,15 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+
+    public function logo(){
+        $setting = Setting::select()->first();
+        $logo['sitename'] = $setting->sitename;
+        $logo['logo'] = $setting->logo;
+        $logo['small_logo'] = $setting->small_logo;
+        return $logo;
+    }
+
     public function welcome(){
     	return view('welcome');
     }
@@ -28,8 +38,8 @@ class Controller extends BaseController
     		$id = $req->Session()->get('id');
     		$data = User::find($id);
     	}
-
-    	return view('dashboard')->with('data',$data);
+        $site = Controller::logo();
+    	return view('dashboard',compact('site'))->with('data',$data);
     }
 
     public function admin_login_page(){
@@ -54,10 +64,11 @@ class Controller extends BaseController
  
     	$data = User::where('email' , $username)->where('password' , md5($password))->first();
     	if($data != '')
-	      {
+	    {
 	      	$req->Session()->put('id',$data->id);
 	        $req->Session()->put('AdminStatus',true);
 	        if($req->remember){
+                //Username Password Cookie
 		        $cookie_name = "email";
 				$cookie_value = $username;
 				setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
@@ -65,16 +76,29 @@ class Controller extends BaseController
 				$cookie_value = $password;
 				setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
 	      	}
+            //Layout Cookie
+            $setting = Setting::select()->first();
+            $cookie_name = "primary_color";
+            $cookie_value = $setting->primary_color;
+            setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+            $cookie_name = "secondary_color";
+            $cookie_value = $setting->secondary_color;
+            setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+
 	        return redirect('/dashboard');
-	      }
-	      else {
+	    }
+	    else {
             
-	          return redirect("/user_login")->with("error","Please Enter Correct Username And Password");
-	      }
+	        return redirect("/user_login")->with("error","Please Enter Correct Username And Password");
+	    }
 
     }
 
     public function logout(Request $req){
+        //destroy layout cookie
+        setcookie('primary_color','', time() - 3600);
+        setcookie('secondary_color','', time() - 3600);
+        
     	if($req->Session()->has('AdminStatus')){
     		$req->Session()->forget('AdminStatus');
     		$req->Session()->forget('id');
@@ -88,8 +112,8 @@ class Controller extends BaseController
     		$id = $req->Session()->get('id');
     		$data = User::find($id);
     	}
-
-    	return view('reset_pasword')->with('data',$data);
+        $site = Controller::logo();
+    	return view('reset_pasword',compact('site'))->with('data',$data);
     }
 
     public function reset_pw(Request $req){
@@ -209,5 +233,7 @@ class Controller extends BaseController
         }
 
     }
+
+    
     
 }

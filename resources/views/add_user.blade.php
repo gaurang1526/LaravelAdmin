@@ -24,7 +24,7 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-md-6">
+          <div class="col-md-12">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
@@ -66,7 +66,7 @@
                     <input type="password" class="form-control" id="examplePassword" placeholder="Password" name="Password" required>
                   </div>
                   <div class="form-group">
-                    <label for="examplepassword">Email</label>
+                    <label for="examplepassword">Confirm Password</label>
                     <input type="password" class="form-control" id="examplepassword" placeholder="Confirm Password" name="Password_confirmation" required>
                   </div>
                   @if(count($errors) > 0)
